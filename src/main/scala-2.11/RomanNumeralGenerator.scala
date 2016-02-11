@@ -14,15 +14,19 @@ case object Symbols {
 object RomanNumeralGenerator extends RomanNumeralGenerator {
   import Symbols._
 
-  override def generate(n: Int) = n match {
-    case _: Int if (n == nextNumber(n)) => nextSymbol(n)
-    case _: Int if (n == nextNumber(n) - 1) =>
-      subtractBeforeLargerSymbol(n)
-    case _: Int if (withinRange(n) && canBeRepeated(previousSymbol(n))) => addSymbol(n, previousSymbol(n))
-    case _: Int if (withinRange(n) && !canBeRepeated(previousSymbol(n))) =>
-      previousSymbol(n) + addSymbol(n - previousTuple(n)._2, previousSymbol(previousTuple(n)._2 - 1))
+
+  def generate(number: Int) = if(number <= 10) generateOneToTen(number) else "X" + generateOneToTen(number - 10)
+
+  def generateOneToTen(number: Int) = number match {
+    case _: Int if (number == nextNumber(number))                                  => nextSymbol(number)
+    case _: Int if (number == nextNumber(number) - 1)                              => subtractBeforeLargerSymbol(number)
+    case _: Int if (withinRange(number) && canBeRepeated(previousSymbol(number)))  => addSymbol(number, previousSymbol(number))
+    case _: Int if (withinRange(number) && !canBeRepeated(previousSymbol(number))) => addBeforeLargerSymbol(number)
     case _ => "Unknown"
   }
+
+  private def addBeforeLargerSymbol(number: Int): String =
+    previousSymbol(number) + addSymbol(number - previousTuple(number)._2, previousSymbol(previousTuple(number)._2 - 1))
 
   private def subtractBeforeLargerSymbol(n: Int): String =
     if (canBeRepeated(previousSymbol(n))) s"${previousSymbol(n)}${nextSymbol(n)}" else s"${previousRepeatable(n)._1}${nextSymbol(n)}"
