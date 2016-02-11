@@ -16,48 +16,27 @@ object RomanNumeralGenerator extends RomanNumeralGenerator {
 
   override def generate(n: Int) = n match {
     case _: Int if (n == nextNumber(n)) => nextSymbol(n)
+    case _: Int if (n == nextNumber(n) - 1) =>
+      if(canBeRepeated(previousSymbol(n))) s"${previousSymbol(n)}${nextSymbol(n)}" else s"${previousRepeatable(n)._1}${nextSymbol(n)}"
     case _: Int if (withinRange(n) && canBeRepeated(previousSymbol(n))) => addSymbol(n, previousSymbol(n))
-//    case _: Int if (withinRange(n) && !canBeRepeated(previousSymbol(n))) =>
-//      previousSymbol(n) + addSymbol(n - previousTuple(n)._2, previousSymbol(previousTuple(n)._2 - 1))
+    case _: Int if (withinRange(n) && !canBeRepeated(previousSymbol(n))) =>
+      previousSymbol(n) + addSymbol(n - previousTuple(n)._2, previousSymbol(previousTuple(n)._2 - 1))
     case _ => "Unknown"
   }
-
 
   def addSymbol(n: Int, symbol: String, res: String = ""): String =
     if (n > 0) res + symbol + addSymbol(n - 1, symbol, res) else res
 
-//  def addSymbol(n: Int, symbol: String, res: String = ""): String = res match {
-//    case s: String if (n > 0 && doesOccurThreeTimes(res, symbol)) =>  symbol + nextSymbol(n) + " inv"
-//    case s: String if (n > 0 && !doesOccurThreeTimes(res, symbol)) => res + symbol + addSymbol(n - 1, res, symbol)
-//    case s: String if (n > 0) => res + symbol + addSymbol(n - 1, res, symbol)
-//    case _ => res
-//  }
-
   def doesOccurMoreThanThreeTimes(s: String, sym: String) = s.count(_.toString == sym) > 3
 
-  def doesOccurThreeTimes(s: String, sym: String) = {
-//    println(s.count(c => c.toString.equals(sym)))
-    s.count(c => c.toString.equals(sym)) == 3
-  }
-
-  private def inRangeOccuredThreeTimes(n: Int): Boolean =
-    withinRange(n) && doesOccurMoreThanThreeTimes(addSymbol(n, previousSymbol(n)), previousSymbol(n))
-
-  private def inRangeAndLessThanThreeTimes(n: Int): Boolean =
-    withinRange(n) && !doesOccurMoreThanThreeTimes(addSymbol(n, previousSymbol(n)), previousSymbol(n))
+  def doesOccurThreeTimes(s: String, sym: String) = s.count(c => c.toString.equals(sym)) == 3
 
   private def nextTuple(n: Int): (String, Int) = sym.dropWhile(e => e._2 < n).head
-
   private def nextNumber(n: Int): Int = nextTuple(n)._2
-
   private def nextSymbol(n: Int): String = nextTuple(n)._1
-
-  private def previousTuple(n: Int): (String, Int) = sym.takeWhile(e => e._2 < n).last
-
+  private def previousTuple(n: Int): (String, Int) = sym.takeWhile(_._2 < n).last
   private def previousSymbol(n: Int): String = previousTuple(n)._1
-
   private def withinRange(n: Int): Boolean = n > previousTuple(n)._2 && n < nextNumber(n)
-
-  private def rangeWithPreviousTwo(n: Int): ((String, Int), (String, Int), (String, Int)) = (previousTuple(n - 1), previousTuple(n), nextTuple(n))
+  private def previousRepeatable(n: Int) = sym.filter(s => canBeRepeated(s._1)).takeWhile(_._2 < n).last
 
 }
