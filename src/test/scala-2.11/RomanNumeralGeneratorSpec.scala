@@ -22,12 +22,6 @@ class RomanNumeralGeneratorSpec extends FunSuite {
 //    assert(numbers.map(generate) == List("IX", "X", "X1",))
 //  }
 //
-  test("returns true is char occurs 3 times false otherwise") {
-    assert(doesOccurMoreThanThreeTimes("III", "I") == false)
-    assert(doesOccurMoreThanThreeTimes("IIII", "I") == true)
-    assert(doesOccurMoreThanThreeTimes("IV", "I") == false)
-  }
-
 //
 //  test("returns a roman numerical representation of a number from 4 to 8") {
 //    val oneToEight = 4 to 6 toList

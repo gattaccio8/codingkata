@@ -17,19 +17,17 @@ object RomanNumeralGenerator extends RomanNumeralGenerator {
   override def generate(n: Int) = n match {
     case _: Int if (n == nextNumber(n)) => nextSymbol(n)
     case _: Int if (n == nextNumber(n) - 1) =>
-      if(canBeRepeated(previousSymbol(n))) s"${previousSymbol(n)}${nextSymbol(n)}" else s"${previousRepeatable(n)._1}${nextSymbol(n)}"
+      subtractBeforeLargerSymbol(n)
     case _: Int if (withinRange(n) && canBeRepeated(previousSymbol(n))) => addSymbol(n, previousSymbol(n))
     case _: Int if (withinRange(n) && !canBeRepeated(previousSymbol(n))) =>
       previousSymbol(n) + addSymbol(n - previousTuple(n)._2, previousSymbol(previousTuple(n)._2 - 1))
     case _ => "Unknown"
   }
 
-  def addSymbol(n: Int, symbol: String, res: String = ""): String =
-    if (n > 0) res + symbol + addSymbol(n - 1, symbol, res) else res
+  private def subtractBeforeLargerSymbol(n: Int): String =
+    if (canBeRepeated(previousSymbol(n))) s"${previousSymbol(n)}${nextSymbol(n)}" else s"${previousRepeatable(n)._1}${nextSymbol(n)}"
 
-  def doesOccurMoreThanThreeTimes(s: String, sym: String) = s.count(_.toString == sym) > 3
-
-  def doesOccurThreeTimes(s: String, sym: String) = s.count(c => c.toString.equals(sym)) == 3
+  def addSymbol(n: Int, symbol: String, res: String = ""): String = if (n > 0) res + symbol + addSymbol(n - 1, symbol, res) else res
 
   private def nextTuple(n: Int): (String, Int) = sym.dropWhile(e => e._2 < n).head
   private def nextNumber(n: Int): Int = nextTuple(n)._2
