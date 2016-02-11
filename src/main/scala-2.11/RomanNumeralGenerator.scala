@@ -24,7 +24,7 @@ object RomanNumeralGenerator extends RomanNumeralGenerator {
 
 
   def addSymbol(n: Int, symbol: String, res: String = ""): String =
-    if (n > 0) res + symbol + addSymbol(n - 1, res, symbol) else res
+    if (n > 0) res + symbol + addSymbol(n - 1, symbol, res) else res
 
 //  def addSymbol(n: Int, symbol: String, res: String = ""): String = res match {
 //    case s: String if (n > 0 && doesOccurThreeTimes(res, symbol)) =>  symbol + nextSymbol(n) + " inv"
