@@ -3,42 +3,21 @@ trait RomanNumeralGenerator {
 }
 
 case object Symbols {
-  val symbols = List("I", "V", "X", "L", "C", "D", "M")
-  val sym = List(("I", 1), ("V", 5), ("X", 10), ("L", 50), ("C", 100), ("D", 500), ("M", 1000))
-  def canBeRepeated(symbol: String) = !Set("V", "L", "D").contains(symbol)
+  val table: List[(String, Int)] = List(("I", 1), ("IV", 4), ("V", 5), ("IX", 9), ("X", 10), ("XL", 40), ("L", 50), ("XC", 90),
+    ("C", 100), ("CD", 400), ("D", 500), ("CM", 900), ("M", 1000))
 }
 
-//When a symbol appears before a larger symbol it is subtracted
-//When a symbol appears after a larger symbol it is added
-//Don't use the same symbol more than three times in a row
 object RomanNumeralGenerator extends RomanNumeralGenerator {
   import Symbols._
 
 
-  def generate(number: Int) = if(number <= 10) generateOneToTen(number) else "X" + generateOneToTen(number - 10)
+  override def generate(number: Int) = buildResult(number, "")
 
-  def generateOneToTen(number: Int) = number match {
-    case _: Int if (number == nextNumber(number))                                  => nextSymbol(number)
-    case _: Int if (number == nextNumber(number) - 1)                              => subtractBeforeLargerSymbol(number)
-    case _: Int if (withinRange(number) && canBeRepeated(previousSymbol(number)))  => addSymbol(number, previousSymbol(number))
-    case _: Int if (withinRange(number) && !canBeRepeated(previousSymbol(number))) => addBeforeLargerSymbol(number)
-    case _ => "Unknown"
+  def buildResult(decimal: Int, result: String): String = findHighestDecimal(decimal) match {
+    case (s: String, x: Int) if(x == decimal) => result + s
+    case (s: String, x: Int) if(x < decimal) => result + findHighestDecimal(decimal)._1 + buildResult(decimal - x, result)
+    case _ => result
   }
 
-  private def addBeforeLargerSymbol(number: Int): String =
-    previousSymbol(number) + addSymbol(number - previousTuple(number)._2, previousSymbol(previousTuple(number)._2 - 1))
-
-  private def subtractBeforeLargerSymbol(n: Int): String =
-    if (canBeRepeated(previousSymbol(n))) s"${previousSymbol(n)}${nextSymbol(n)}" else s"${previousRepeatable(n)._1}${nextSymbol(n)}"
-
-  def addSymbol(n: Int, symbol: String, res: String = ""): String = if (n > 0) res + symbol + addSymbol(n - 1, symbol, res) else res
-
-  private def nextTuple(n: Int): (String, Int) = sym.dropWhile(e => e._2 < n).head
-  private def nextNumber(n: Int): Int = nextTuple(n)._2
-  private def nextSymbol(n: Int): String = nextTuple(n)._1
-  private def previousTuple(n: Int): (String, Int) = sym.takeWhile(_._2 < n).last
-  private def previousSymbol(n: Int): String = previousTuple(n)._1
-  private def withinRange(n: Int): Boolean = n > previousTuple(n)._2 && n < nextNumber(n)
-  private def previousRepeatable(n: Int) = sym.filter(s => canBeRepeated(s._1)).takeWhile(_._2 < n).last
-
+  def findHighestDecimal(decimal: Int): (String, Int) = table.takeWhile(t => t._2 == decimal || t._2 < decimal).last
 }

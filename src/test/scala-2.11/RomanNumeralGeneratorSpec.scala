@@ -4,29 +4,21 @@ import RomanNumeralGenerator._
 
 class RomanNumeralGeneratorSpec extends FunSuite {
 
-  test("returns a roman numerical representation of a number from 1 to 4") {
-    val numbers = 1 to 4 toList
-
-    assert(numbers.map(generateOneToTen) == List("I", "II", "III", "IV"))
+  test("find the highest decimal value that is less than or equal to the decimal number") {
+    assert(findHighestDecimal(9) == ("IX", 9))
+    assert(findHighestDecimal(11) == ("X", 10))
   }
 
   test("returns a roman numerical representation of a number from 1 to 10") {
     val numbers = 1 to 10 toList
 
-    assert(numbers.map(generateOneToTen) == List("I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"))
+    assert(numbers.map(generate) == List("I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"))
   }
 
-  test("returns a roman numerical representation of a number from 9 to 20") {
-    val numbers = 9 to 20 toList
+  test("returns a roman numerical representation of random numbers") {
+    val numbers = List(36, 1996, 3999)
 
-    assert(numbers.map(generate) == List("IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX"))
+    assert(numbers.map(generate) == List("XXXVI", "MCMXCVI", "MMMCMXCIX"))
   }
-
-
-//  test("returns a roman numerical representation of a number from 4 to 8") {
-//    val oneToEight = 4 to 6 toList
-//
-//    assert(oneToEight.map(generate) == List("IV", "V", "VI", "VII", "VIII"))
-//  }
 }
 
