@@ -12,7 +12,6 @@ case object Symbols {
 object RomanNumeralGenerator extends RomanNumeralGenerator {
   import Symbols._
 
-
   override def generate(number: Int) = buildResult(number, "")
 
   def buildResult(decimal: Int, result: String): String = findHighestDecimal(decimal) match {
