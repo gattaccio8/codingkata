@@ -16,9 +16,9 @@ class RomanNumeralGeneratorSpec extends FunSuite {
   }
 
   test("returns a roman numerical representation of random numbers") {
-    val numbers = List(36, 1996, 3999)
+    val numbers = List(36, 1996, 3999, 4000)
 
-    assert(numbers.map(generate) == List("XXXVI", "MCMXCVI", "MMMCMXCIX"))
+    assert(numbers.map(generate) == List("XXXVI", "MCMXCVI", "MMMCMXCIX", "Unsupported"))
   }
 }
 

@@ -1,3 +1,5 @@
+
+
 trait RomanNumeralGenerator {
   def generate(number: Int): String
 }
@@ -14,6 +16,7 @@ object RomanNumeralGenerator extends RomanNumeralGenerator {
   override def generate(number: Int) = buildResult(number, "")
 
   def buildResult(decimal: Int, result: String): String = findHighestDecimal(decimal) match {
+    case (s: String, x: Int) if(decimal >= 4000) => result + "Unsupported"
     case (s: String, x: Int) if(x == decimal) => result + s
     case (s: String, x: Int) if(x < decimal) => result + findHighestDecimal(decimal)._1 + buildResult(decimal - x, result)
     case _ => result
